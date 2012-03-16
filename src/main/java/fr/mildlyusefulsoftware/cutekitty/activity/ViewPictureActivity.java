@@ -1,7 +1,6 @@
 package fr.mildlyusefulsoftware.cutekitty.activity;
 
 import java.io.IOException;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-import android.widget.ListView;
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.PicturePager;
 
@@ -46,13 +44,13 @@ public class ViewPictureActivity extends Activity {
 			}
 		});
 		try {
-			loadNextPicture();
+			loadOlderPicture();
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 
-	private void loadNextPicture() throws IOException {
+	private void loadOlderPicture() throws IOException {
 		final ProgressDialog progressDialog = ProgressDialog.show(this,
 				"Loading", "please wait", true);
 		new AsyncTask<Void, Void, Bitmap>() {
@@ -60,7 +58,7 @@ public class ViewPictureActivity extends Activity {
 			protected Bitmap doInBackground(Void... params) {
 
 				try {
-					return PicturePager.getInstance().getNextPicture();
+					return PicturePager.getInstance().getOlderPicture();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage(), e);
 				}
@@ -83,7 +81,7 @@ public class ViewPictureActivity extends Activity {
 
 	}
 
-	private void loadPreviousPicture() throws IOException {
+	private void loadNewerPicture() throws IOException {
 		final ProgressDialog progressDialog = ProgressDialog.show(this,
 				"Loading", "please wait", true);
 		new AsyncTask<Void, Void, Bitmap>() {
@@ -91,7 +89,7 @@ public class ViewPictureActivity extends Activity {
 			protected Bitmap doInBackground(Void... params) {
 
 				try {
-					return PicturePager.getInstance().getPreviousPicture();
+					return PicturePager.getInstance().getNewerPicture();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage(), e);
 				}
@@ -125,18 +123,18 @@ public class ViewPictureActivity extends Activity {
 				float velocityY) {
 			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d(TAG, "loading next picture");
+				Log.d(TAG, "loading older picture");
 				try {
-					loadNextPicture();
+					loadOlderPicture();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage(), e);
 				}
 				return false; // Right to left
 			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d(TAG, "loading previous picture");
+				Log.d(TAG, "loading newer picture");
 				try {
-					loadPreviousPicture();
+					loadNewerPicture();
 				} catch (IOException e) {
 					Log.e(TAG, e.getMessage(), e);
 				}
