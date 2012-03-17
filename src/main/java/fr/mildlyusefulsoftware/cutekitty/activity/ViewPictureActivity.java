@@ -3,17 +3,16 @@ package fr.mildlyusefulsoftware.cutekitty.activity;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.Toast;
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.PicturePager;
 
@@ -35,113 +34,31 @@ public class ViewPictureActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "onCreate");
 		setContentView(R.layout.view_picture_layout);
-		ImageView pictureView = (ImageView) findViewById(R.id.pictureView);
-		pictureView.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(final View view, final MotionEvent event) {
-				gdt.onTouchEvent(event);
-				return true;
-			}
-		});
+		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
+		Bitmap b;
 		try {
-			loadOlderPicture();
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage(), e);
+			b = PicturePager.getInstance().getPictureAt(0);
+			ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
+			pictureView.setImageBitmap(b);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-	}
-
-	private void loadOlderPicture() throws IOException {
-		final ProgressDialog progressDialog = ProgressDialog.show(this,
-				"Loading", "please wait", true);
-		new AsyncTask<Void, Void, Bitmap>() {
-			@Override
-			protected Bitmap doInBackground(Void... params) {
-
-				try {
-					return PicturePager.getInstance().getOlderPicture();
+		
+		pictureList.setAdapter(new ImageAdapter(this));
+		pictureList.setOnItemClickListener(new OnItemClickListener() {
+	        public void onItemClick(AdapterView parent, View v, int position, long id) {
+	        	try {
+					Bitmap b=PicturePager.getInstance().getPictureAt(position);
+					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
+					pictureView.setImageBitmap(b);
 				} catch (IOException e) {
-					Log.e(TAG, e.getMessage(), e);
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				return null;
-			}
-
-			protected void onPreExecute() {
-				super.onPreExecute();
-			}
-
-			protected void onPostExecute(Bitmap picture) {
-				progressDialog.dismiss();
-				ImageView pictureView = (ImageView) findViewById(R.id.pictureView);
-				if (picture != null) {
-					pictureView.setImageBitmap(picture);
-				}
-			}
-
-		}.execute();
-
-	}
-
-	private void loadNewerPicture() throws IOException {
-		final ProgressDialog progressDialog = ProgressDialog.show(this,
-				"Loading", "please wait", true);
-		new AsyncTask<Void, Void, Bitmap>() {
-			@Override
-			protected Bitmap doInBackground(Void... params) {
-
-				try {
-					return PicturePager.getInstance().getNewerPicture();
-				} catch (IOException e) {
-					Log.e(TAG, e.getMessage(), e);
-				}
-				return null;
-			}
-
-			protected void onPreExecute() {
-				super.onPreExecute();
-			}
-
-			protected void onPostExecute(Bitmap picture) {
-				progressDialog.dismiss();
-				ImageView pictureView = (ImageView) findViewById(R.id.pictureView);
-				if (picture != null) {
-					pictureView.setImageBitmap(picture);
-				}
-			}
-
-		}.execute();
-	}
-
-	private final GestureDetector gdt = new GestureDetector(
-			new GestureListener());
-
-	private static final int SWIPE_MIN_DISTANCE = 120;
-	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-
-	private class GestureListener extends SimpleOnGestureListener {
-		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
-			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d(TAG, "loading older picture");
-				try {
-					loadOlderPicture();
-				} catch (IOException e) {
-					Log.e(TAG, e.getMessage(), e);
-				}
-				return false; // Right to left
-			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d(TAG, "loading newer picture");
-				try {
-					loadNewerPicture();
-				} catch (IOException e) {
-					Log.e(TAG, e.getMessage(), e);
-				}
-				return false; // Left to right
-			}
-
-			return false;
+	        }
+	    });
 		}
-	}
+
+	
 }

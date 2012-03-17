@@ -1,16 +1,18 @@
 package fr.mildlyusefulsoftware.cutekitty.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class PicturePager {
 
-	private int currentPictureInPageIndex = 0;
-	private PicturePage currentPage =null;
+	private List<Picture> pictures = new ArrayList<Picture>();
 	private PictureProvider provider = null;
 	private static PicturePager instance = null;
+	private int lastPageLoaded = 0;
 
 	public static PicturePager getInstance() {
 		if (instance == null) {
@@ -24,33 +26,23 @@ public class PicturePager {
 		provider = new PictureProvider();
 	}
 
-	public Bitmap getOlderPicture() throws IOException {
-		if (currentPage==null){
-			currentPage=provider.getPicturePage(1);
+	public Bitmap getPictureAt(int index) throws IOException {
+		if (pictures.size() <= index) {
+			loadPicturesUntil(index);
 		}
-		
-		if (currentPictureInPageIndex+1>=currentPage.getNumberOfPictures()){
-			currentPage=provider.getPicturePage(currentPage.getPageNumber()+1);
-			currentPictureInPageIndex=-1;
-		}
-		Bitmap b= getBitmapFromPicture(currentPage.getPictureAtIndex(currentPictureInPageIndex+1));
-		currentPictureInPageIndex++;
+		Picture p = pictures.get(index);
+		Bitmap b = getBitmapFromPicture(p);
 		return b;
 	}
 
-	public Bitmap getNewerPicture() throws IOException {
-		if (currentPage==null){
-			currentPage=provider.getPicturePage(1);
+	private void loadPicturesUntil(int index) throws IOException {
+		List<Picture> pictureToAdd=new ArrayList<Picture>();
+		while (pictures.size() +pictureToAdd.size()<= index) {
+			pictureToAdd.addAll(provider.getPicturePage(lastPageLoaded + 1).getPictures());
+			lastPageLoaded++;
 		}
-		
-		if (currentPictureInPageIndex-1<0){
-			currentPage=provider.getPicturePage(currentPage.getPageNumber()-1);
-			currentPictureInPageIndex=currentPage.getNumberOfPictures();
-		}
-		
-		Bitmap b= getBitmapFromPicture(currentPage.getPictureAtIndex(currentPictureInPageIndex-1));
-		currentPictureInPageIndex--;
-		return b;
+		pictures.addAll(pictureToAdd);
+
 	}
 
 	private Bitmap getBitmapFromPicture(Picture picture) throws IOException {

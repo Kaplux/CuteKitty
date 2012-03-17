@@ -7,7 +7,14 @@
     <ImageView
         android:id="@+id/pictureView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.14"
+        android:src="@drawable/icon" />
+
+    <Gallery
+        android:id="@+id/pictureList"
+        android:layout_width="fill_parent"
+        android:layout_height="116dp"
         android:src="@drawable/icon" />
 
 </LinearLayout>
