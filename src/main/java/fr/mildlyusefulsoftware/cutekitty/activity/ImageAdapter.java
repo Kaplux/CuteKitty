@@ -39,7 +39,7 @@ public class ImageAdapter extends BaseAdapter implements SpinnerAdapter {
         ImageView imageView = new ImageView(mContext);
        
         try {
-        	Bitmap b=PicturePager.getInstance().getPictureAt(position);
+        	Bitmap b=PicturePager.getInstance(mContext).getPictureAt(position);
         	imageView.setImageBitmap(b);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -2,21 +2,20 @@ package fr.mildlyusefulsoftware.cutekitty.service;
 
 public class Picture {
 
-	private byte[] bytes;
+	private byte[] image;
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 
 	private int id;
 
 	private int pageNumber;
 
-	private String imageURL;
-
-	public byte[] getBytes() {
-		return bytes;
-	}
-
-	public void setBytes(byte[] bytes) {
-		this.bytes = bytes;
-	}
 
 	public int getId() {
 		return id;
@@ -26,19 +25,11 @@ public class Picture {
 		this.id = id;
 	}
 
-	public Picture(int id, int pageNumber, String imageURL) {
+	public Picture(int id, int pageNumber, byte[] image) {
 		super();
-		this.imageURL = imageURL;
+		this.image = image;
 		this.id = id;
 		this.pageNumber = pageNumber;
-	}
-
-	public String getImageURL() {
-		return imageURL;
-	}
-
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
 	}
 
 	public int getPageNumber() {

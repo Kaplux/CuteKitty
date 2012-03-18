@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -14,16 +15,16 @@ public class PicturePager {
 	private static PicturePager instance = null;
 	private int lastPageLoaded = 0;
 
-	public static PicturePager getInstance() {
+	public static PicturePager getInstance(Context context) {
 		if (instance == null) {
-			instance = new PicturePager();
+			instance = new PicturePager(context);
 		}
 		return instance;
 	}
 
-	private PicturePager() {
+	private PicturePager(Context context) {
 		super();
-		provider = new PictureProvider();
+		provider = new PictureProvider(context);
 	}
 
 	public Bitmap getPictureAt(int index) throws IOException {
@@ -46,11 +47,9 @@ public class PicturePager {
 	}
 
 	private Bitmap getBitmapFromPicture(Picture picture) throws IOException {
-		picture.setBytes(provider.getPictureBytes(picture.getImageURL()));
-		Bitmap bitmap = null;
 		BitmapFactory.Options options = new BitmapFactory.Options();
-		bitmap = BitmapFactory.decodeByteArray(picture.getBytes(), 0,
-				picture.getBytes().length, options);
+		Bitmap bitmap = BitmapFactory.decodeByteArray(picture.getImage(), 0,
+				picture.getImage().length, options);
 
 		return bitmap;
 	}

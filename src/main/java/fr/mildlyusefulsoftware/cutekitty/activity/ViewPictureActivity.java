@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.Toast;
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.PicturePager;
 
@@ -37,7 +35,7 @@ public class ViewPictureActivity extends Activity {
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		Bitmap b;
 		try {
-			b = PicturePager.getInstance().getPictureAt(0);
+			b = PicturePager.getInstance(this).getPictureAt(0);
 			ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
 			pictureView.setImageBitmap(b);
 		} catch (IOException e1) {
@@ -49,7 +47,7 @@ public class ViewPictureActivity extends Activity {
 		pictureList.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView parent, View v, int position, long id) {
 	        	try {
-					Bitmap b=PicturePager.getInstance().getPictureAt(position);
+					Bitmap b=PicturePager.getInstance(getApplicationContext()).getPictureAt(position);
 					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
 					pictureView.setImageBitmap(b);
 				} catch (IOException e) {
