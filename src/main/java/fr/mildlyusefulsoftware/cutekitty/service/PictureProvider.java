@@ -32,8 +32,12 @@ public class PictureProvider {
 						elt.attr("id").lastIndexOf("-") + 1));
 				String imageURL = imageElt.attr("src");
 				if (!imageURL.endsWith(".gif")) {
+					try{
 					pictures.add(new Picture(pictureId, imageURL, Picture
 							.getPictureThumbnail(imageURL)));
+					}catch (Exception e){
+						Log.e(TAG,e.getMessage(),e);
+					}
 				}
 			}
 

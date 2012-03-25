@@ -1,9 +1,15 @@
 package fr.mildlyusefulsoftware.cutekitty.service;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,12 +17,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper {
 
 	private static final String DB_NAME = "PICTURES.DB";
 	private SQLiteDatabase db;
+	private InternalDBHelper internalDBHelper ;
 	private static ReentrantLock LOCK = new ReentrantLock();
+	private static String TAG = "cutekitty";
 
 	public static DatabaseHelper connect(Context context) {
 		LOCK.lock();
@@ -25,7 +34,7 @@ public class DatabaseHelper {
 
 	private DatabaseHelper(Context context) {
 		super();
-		InternalDBHelper internalDBHelper = new InternalDBHelper(context,
+		internalDBHelper = new InternalDBHelper(context,
 				DB_NAME, null, 1);
 		db = internalDBHelper.getWritableDatabase();
 	}
@@ -67,6 +76,10 @@ public class DatabaseHelper {
 		c.close();
 		return pictures;
 	}
+	
+	public void copyDatabase() throws IOException {
+		internalDBHelper.copyDatabase();
+	}
 
 	class InternalDBHelper extends SQLiteOpenHelper {
 
@@ -79,26 +92,48 @@ public class DatabaseHelper {
 				+ TABLE_PICTURES + " (" + COL_ID
 				+ " INTEGER PRIMARY KEY, " + COL_IMAGE_URL
 				+ " TEXT NOT NULL, " + COL_THUMBNAIL + " BLOB NOT NULL);";
+		
+		private Context context;
 
 		public InternalDBHelper(Context context, String name,
 				CursorFactory factory, int version) {
 			super(context, name, factory, version);
+			this.context=context;
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			// on créé la table à partir de la requête écrite dans la variable
-			// CREATE_BDD
 			db.execSQL(CREATE_BDD);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// On peut fait ce qu'on veut ici moi j'ai décidé de supprimer la
-			// table et de la recréer
-			// comme ça lorsque je change la version les id repartent de 0
 			db.execSQL("DROP TABLE " + TABLE_PICTURES + ";");
 			onCreate(db);
+		}
+		
+		public void copyDatabase() throws IOException {
+			Log.i(TAG, "copying database");
+			File dbFile = context.getDatabasePath(DB_NAME);
+			int BUFFER=2048;
+			ZipInputStream zis = new ZipInputStream(context.getAssets().open(
+					DB_NAME + ".zip"));
+			BufferedOutputStream dest = null;
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				System.out.println("Extracting: " + entry);
+				int count;
+				byte data[] = new byte[BUFFER];
+				FileOutputStream fos = new FileOutputStream(dbFile);
+				dest = new BufferedOutputStream(fos, BUFFER);
+				while ((count = zis.read(data, 0, BUFFER)) != -1) {
+					dest.write(data, 0, count);
+				}
+				dest.flush();
+				dest.close();
+			}
+			zis.close();
+
 		}
 	}
 }

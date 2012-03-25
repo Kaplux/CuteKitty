@@ -63,7 +63,7 @@ public class Picture {
 			imageBitmap = Bitmap.createScaledBitmap(imageBitmap,
 					THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+			imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
 			return baos.toByteArray();
 		} finally {
 			in.close();

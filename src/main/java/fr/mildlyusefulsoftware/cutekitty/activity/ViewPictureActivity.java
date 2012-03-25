@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.Picture;
 
@@ -63,6 +64,7 @@ public class ViewPictureActivity extends Activity {
 					Bitmap b=Picture.getBitmapFromPicture(PicturePager.getInstance(getApplicationContext()).getPictureAt(position));
 					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
 					pictureView.setImageBitmap(b);
+					Toast.makeText(getApplicationContext(),"ID : "+PicturePager.getInstance(getApplicationContext()).getPictureAt(position).getId(), Toast.LENGTH_SHORT).show();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
