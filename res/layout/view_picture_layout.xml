@@ -15,6 +15,7 @@
         android:id="@+id/pictureList"
         android:layout_width="fill_parent"
         android:layout_height="116dp"
+        android:spacing="0dp"
         android:src="@drawable/icon" />
 
 </LinearLayout>

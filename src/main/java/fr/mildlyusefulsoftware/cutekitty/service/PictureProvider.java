@@ -31,8 +31,10 @@ public class PictureProvider {
 				int pictureId = Integer.valueOf(elt.attr("id").substring(
 						elt.attr("id").lastIndexOf("-") + 1));
 				String imageURL = imageElt.attr("src");
-				pictures.add(new Picture(pictureId, imageURL, Picture
-						.getPictureThumbnail(imageURL)));
+				if (!imageURL.endsWith(".gif")) {
+					pictures.add(new Picture(pictureId, imageURL, Picture
+							.getPictureThumbnail(imageURL)));
+				}
 			}
 
 		}
