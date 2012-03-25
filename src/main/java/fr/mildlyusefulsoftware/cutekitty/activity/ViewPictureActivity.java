@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
@@ -39,7 +40,9 @@ public class ViewPictureActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "onCreate");
+		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.view_picture_layout);
+		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
 		initAdBannerView();
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		Bitmap b;
