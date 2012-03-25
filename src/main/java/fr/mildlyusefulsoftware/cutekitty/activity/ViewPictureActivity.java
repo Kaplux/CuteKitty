@@ -94,7 +94,7 @@ public class ViewPictureActivity extends Activity {
 	protected void initAdBannerView() {
 		final ViewGroup quoteLayout = (ViewGroup) findViewById(R.id.view_picutre_root_layout);
 		// Create the adView
-		adView = new AdView(this, AdSize.BANNER, "a14f6e53e04f4bf");
+		adView = new AdView(this, AdSize.BANNER, "a14f6f84d0cc485");
 		LinearLayout adLayout = new LinearLayout(this);
 		adLayout.addView(adLayout);
 		// Add the adView to it
