@@ -100,7 +100,7 @@ public class ViewPictureActivity extends Activity {
 		// Add the adView to it
 		quoteLayout.addView(adView);
 		AdRequest ar=new AdRequest();
-		ar.addTestDevice(AdRequest.TEST_EMULATOR);
+	//	ar.addTestDevice(AdRequest.TEST_EMULATOR);
 		// Initiate a generic request to load it with an ad
 		adView.loadAd(ar);
 
