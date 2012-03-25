@@ -63,7 +63,7 @@ public class DatabaseHelper {
 				InternalDBHelper.COL_ID,
 				InternalDBHelper.COL_IMAGE_URL,
 				InternalDBHelper.COL_THUMBNAIL },null,
-				null, null, null, null);
+				null, null, null, InternalDBHelper.COL_ID + " DESC");
 		if (c.getCount() != 0) {
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
