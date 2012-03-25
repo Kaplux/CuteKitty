@@ -2,14 +2,11 @@ package fr.mildlyusefulsoftware.cutekitty.activity;
 
 import java.io.IOException;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
-
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +16,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.Picture;
 
@@ -46,32 +47,48 @@ public class ViewPictureActivity extends Activity {
 		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
 		initAdBannerView();
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
-		Bitmap b;
-		try {
-			b = Picture.getBitmapFromPicture(PicturePager.getInstance(this).getPictureAt(0));
-			ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
-			pictureView.setImageBitmap(b);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
+		loadImageFromPosition(0);
 		pictureList.setAdapter(new ImageAdapter(this));
 		pictureList.setOnItemClickListener(new OnItemClickListener() {
 	        @Override
 			public void onItemClick(AdapterView parent, View v, int position, long id) {
-	        	try {
-					Bitmap b=Picture.getBitmapFromPicture(PicturePager.getInstance(getApplicationContext()).getPictureAt(position));
-					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
-					pictureView.setImageBitmap(b);
-					Toast.makeText(getApplicationContext(),"ID : "+PicturePager.getInstance(getApplicationContext()).getPictureAt(position).getId(), Toast.LENGTH_SHORT).show();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	        	loadImageFromPosition(position);
 	        }
 	    });
+			if (savedInstanceState != null) {
+				int pos = savedInstanceState.getInt("POSITION");
+				pictureList.setSelection(pos);
+				loadImageFromPosition(pos);
+			}
+		
 		}
+
+
+	private void loadImageFromPosition(final int pos) {
+		final Activity currentActivity = this;
+		final ProgressDialog progressDialog = ProgressDialog.show(this,
+				"Loading", "please wait", true);
+		new AsyncTask<Void, Void, Picture>() {
+			@Override
+			protected Picture doInBackground(Void... params) {
+				return PicturePager.getInstance(currentActivity).getPictureAt(pos);
+			}
+			protected void onPostExecute(Picture picture) {
+				progressDialog.dismiss();
+				Bitmap b;
+				try {
+					b = Picture.getBitmapFromPicture(picture);
+					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
+					pictureView.setImageBitmap(b);
+				} catch (IOException e1) {
+					Log.e(TAG,e1.getMessage(),e1);
+				}
+			}
+
+		}.execute();
+
+		
+	}
 
 	
 	protected void initAdBannerView() {
@@ -96,6 +113,13 @@ public class ViewPictureActivity extends Activity {
 		if (adView != null) {
 			adView.destroy();
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
+		savedInstanceState.putInt("POSITION", pictureList.getSelectedItemPosition());
+		super.onSaveInstanceState(savedInstanceState);
 	}
 	
 }
