@@ -12,7 +12,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import fr.mildlyusefulsoftware.cutekitty.R;
-import fr.mildlyusefulsoftware.cutekitty.service.PicturePager;
+import fr.mildlyusefulsoftware.cutekitty.service.Picture;
 
 public class ViewPictureActivity extends Activity {
 
@@ -35,7 +35,7 @@ public class ViewPictureActivity extends Activity {
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		Bitmap b;
 		try {
-			b = PicturePager.getInstance(this).getPictureAt(0);
+			b = Picture.getBitmapFromPicture(PicturePager.getInstance(this).getPictureAt(0));
 			ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
 			pictureView.setImageBitmap(b);
 		} catch (IOException e1) {
@@ -45,9 +45,10 @@ public class ViewPictureActivity extends Activity {
 		
 		pictureList.setAdapter(new ImageAdapter(this));
 		pictureList.setOnItemClickListener(new OnItemClickListener() {
-	        public void onItemClick(AdapterView parent, View v, int position, long id) {
+	        @Override
+			public void onItemClick(AdapterView parent, View v, int position, long id) {
 	        	try {
-					Bitmap b=PicturePager.getInstance(getApplicationContext()).getPictureAt(position);
+					Bitmap b=Picture.getBitmapFromPicture(PicturePager.getInstance(getApplicationContext()).getPictureAt(position));
 					ImageView pictureView=(ImageView) findViewById(R.id.pictureView);
 					pictureView.setImageBitmap(b);
 				} catch (IOException e) {
