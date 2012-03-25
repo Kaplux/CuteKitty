@@ -64,6 +64,7 @@ public class DatabaseHelper {
 				c.moveToNext();
 			}
 		}
+		c.close();
 		return pictures;
 	}
 
