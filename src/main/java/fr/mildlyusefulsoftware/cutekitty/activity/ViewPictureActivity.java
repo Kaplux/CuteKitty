@@ -2,21 +2,29 @@ package fr.mildlyusefulsoftware.cutekitty.activity;
 
 import java.io.IOException;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import fr.mildlyusefulsoftware.cutekitty.R;
 import fr.mildlyusefulsoftware.cutekitty.service.Picture;
 
 public class ViewPictureActivity extends Activity {
 
 	private static String TAG = "cutekitty";
+	private AdView adView;
 
 	/**
 	 * Called when the activity is first created.
@@ -32,6 +40,7 @@ public class ViewPictureActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "onCreate");
 		setContentView(R.layout.view_picture_layout);
+		initAdBannerView();
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		Bitmap b;
 		try {
@@ -59,5 +68,29 @@ public class ViewPictureActivity extends Activity {
 	    });
 		}
 
+	
+	protected void initAdBannerView() {
+		final ViewGroup quoteLayout = (ViewGroup) findViewById(R.id.view_picutre_root_layout);
+		// Create the adView
+		adView = new AdView(this, AdSize.BANNER, "a14f6e53e04f4bf");
+		LinearLayout adLayout = new LinearLayout(this);
+		adLayout.addView(adLayout);
+		// Add the adView to it
+		quoteLayout.addView(adView);
+		AdRequest ar=new AdRequest();
+		ar.addTestDevice(AdRequest.TEST_EMULATOR);
+		// Initiate a generic request to load it with an ad
+		adView.loadAd(ar);
+
+	}
+	
+
+	@Override
+	protected void onDestroy() {
+		super.onPause();
+		if (adView != null) {
+			adView.destroy();
+		}
+	}
 	
 }
