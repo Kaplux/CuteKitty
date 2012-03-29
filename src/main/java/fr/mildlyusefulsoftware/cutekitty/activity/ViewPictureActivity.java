@@ -57,8 +57,9 @@ public class ViewPictureActivity extends Activity {
 	    });
 			if (savedInstanceState != null) {
 				int pos = savedInstanceState.getInt("POSITION");
-				pictureList.setSelection(pos);
-				loadImageFromPosition(pos);
+				Log.d(TAG,"restore position "+pos);
+			//	pictureList.setSelection(pos);
+				//loadImageFromPosition(pos);
 			}
 		
 		}
@@ -100,7 +101,8 @@ public class ViewPictureActivity extends Activity {
 		// Add the adView to it
 		quoteLayout.addView(adView);
 		AdRequest ar=new AdRequest();
-	//	ar.addTestDevice(AdRequest.TEST_EMULATOR);
+		ar.addTestDevice(AdRequest.TEST_EMULATOR);
+		
 		// Initiate a generic request to load it with an ad
 		adView.loadAd(ar);
 
@@ -119,6 +121,7 @@ public class ViewPictureActivity extends Activity {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		savedInstanceState.putInt("POSITION", pictureList.getSelectedItemPosition());
+		Log.d(TAG,"position "+pictureList.getSelectedItemPosition());
 		super.onSaveInstanceState(savedInstanceState);
 	}
 	
