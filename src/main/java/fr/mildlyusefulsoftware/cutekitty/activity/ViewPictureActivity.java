@@ -45,7 +45,7 @@ public class ViewPictureActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.view_picture_layout);
 		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
-		
+
 		Gallery pictureList = (Gallery) findViewById(R.id.pictureList);
 		if (savedInstanceState != null) {
 			currentPosition = savedInstanceState.getInt("POSITION");
@@ -66,44 +66,34 @@ public class ViewPictureActivity extends Activity {
 		});
 		initAdBannerView();
 	}
-	
 
 	private void loadImageFromPosition(final int pos) {
 		final Activity currentActivity = this;
 
-		new AsyncTask<Void, Void, Picture>() {
-
-			// ProgressDialog progressDialog=null;
+		new AsyncTask<Void, Void, Bitmap>() {
 
 			@Override
-			protected Picture doInBackground(Void... params) {
-				return PicturePager.getInstance(currentActivity).getPictureAt(
-						pos);
+			protected Bitmap doInBackground(Void... params) {
+				Bitmap b=null;
+				try {
+					Picture p =PicturePager.getInstance(currentActivity).getPictureAt(
+							pos);
+					b = Picture.getBitmapFromPicture(p);
+				} catch (IOException e1) {
+					Log.e(TAG, e1.getMessage(), e1);
+				}
+				return b;
 			}
 
 			@Override
 			protected void onPreExecute() {
-				// progressDialog = ProgressDialog.show(currentActivity,
-				// "Loading", "please wait", true);
 				super.onPreExecute();
 			}
 
-			protected void onPostExecute(Picture picture) {
-				// if (progressDialog.isShowing()) {
-				// try {
-				// progressDialog.dismiss();
-				// } catch (Exception e) {
-				// Log.e(TAG, e.getMessage(), e);
-				// }
-				//
-				// }
-				Bitmap b;
-				try {
-					b = Picture.getBitmapFromPicture(picture);
+			protected void onPostExecute(Bitmap b) {
+				if (b!=null){
 					ImageView pictureView = (ImageView) findViewById(R.id.pictureView);
 					pictureView.setImageBitmap(b);
-				} catch (IOException e1) {
-					Log.e(TAG, e1.getMessage(), e1);
 				}
 			}
 
@@ -112,21 +102,21 @@ public class ViewPictureActivity extends Activity {
 	}
 
 	protected void initAdBannerView() {
-		try{
-		final ViewGroup quoteLayout = (ViewGroup) findViewById(R.id.view_picutre_root_layout);
-		// Create the adView
-		adView = new AdView(this, AdSize.BANNER, "a14f6f84d0cc485");
-		LinearLayout adLayout = new LinearLayout(this);
-		adLayout.addView(adLayout);
-		// Add the adView to it
-		quoteLayout.addView(adView);
-		AdRequest ar = new AdRequest();
-//		ar.addTestDevice(AdRequest.TEST_EMULATOR);
+		try {
+			final ViewGroup quoteLayout = (ViewGroup) findViewById(R.id.view_picutre_root_layout);
+			// Create the adView
+			adView = new AdView(this, AdSize.BANNER, "a14f6f84d0cc485");
+			LinearLayout adLayout = new LinearLayout(this);
+			adLayout.addView(adLayout);
+			// Add the adView to it
+			quoteLayout.addView(adView);
+			AdRequest ar = new AdRequest();
+			// ar.addTestDevice(AdRequest.TEST_EMULATOR);
 
-		// Initiate a generic request to load it with an ad
-		adView.loadAd(ar);
-		}catch (Exception e) {
-			Log.e(TAG,e.getMessage(),e);
+			// Initiate a generic request to load it with an ad
+			adView.loadAd(ar);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 
