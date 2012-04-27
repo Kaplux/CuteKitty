@@ -6,6 +6,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -26,6 +27,16 @@
             android:name="com.google.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
 
+        <service android:name=".service.IndexationService" >
+        </service>
+
+        <receiver android:name=".service.PeriodicalUpdater" >
+        </receiver>
+        <receiver android:name=".service.PeriodicalUpdaterBootSetup">
+       		<intent-filter>
+          	  <action android:name="android.intent.action.BOOT_COMPLETED" />
+        	</intent-filter>
+        </receiver>
     </application>
 
 </manifest>
